@@ -7,11 +7,13 @@
 int locate_rocket_1(int pos, char ch);
 int locate_rocket_2(int pos, char ch);
 int locate_ball(char ch);
-void print_field(int pos_1, int pos_2);
+void print_field(int pos_1, int pos_2, int pos_ball_x, int poss_ball_y);
 int vector_x(int own);
+int vector_y(int op);
+int change_owner(int plat_1, int plat_2, int x, int y);
 
 int main(void) {
-    int count, sc_1 = 0, sc_2 = 0, owner;
+    int count, sc_1 = 0, sc_2 = 0, owner, flag_y = -1, flag_x;
     int rocket_1 = 12, rocket_2 = 12, ball_y = 12, ball_x;
     char command;
     printf("Добро пожаловать в понг! Выберите стартующего игрока (1 или 2): ");
@@ -20,20 +22,26 @@ int main(void) {
             while ((getchar() != '\n'));
     }
     ball_x = 1 ? 3 : LENGHT - 3;            // Определение начального положения мяча по оси Х
-    flag_x = vector(owner)
+    flag_x = vector_x(owner);
     printf("Введите любую клавишу для старта игры (только не кнопку выключения компьютера :)  ");
     while (sc_1 < 21 && sc_2 < 21) {
         scanf("%c", &command);
         while (getchar() != '\n');
         rocket_1 = locate_rocket_1(rocket_1, command);
         rocket_2 = locate_rocket_2(rocket_2, command);
-        print_field(rocket_1, rocket_2);
+        ball_y += flag_y;
+        ball_x += flag_x;
+        if (ball_y <= 2 && ball_y >= 26)            // Изменяет направление мяча по оси Y, если мяч достиг верхней или нижней стенки
+            flag_y *= -1;
+        flag_x = vector_x(owner);
+        owner = change_owner(rocket_1, rocket_2, ball_x, ball_y);
+        print_field(rocket_1, rocket_2, ball_x, ball_y);
     }
         return 0;
 }
 
-void print_field(int pos_1, int pos_2) {                // Печатает поле со всем объектами
-    int count, flag_1 = 0;
+void print_field(int pos_1, int pos_2, int pos_ball_x, int pos_ball_y) {                // Печатает поле со всем объектами
+    int count, flag_1 = 0, flag_ball = 0;
     for (count = 1; count <= LENGHT; count++)
         printf("-");
     printf("\n");
@@ -45,15 +53,18 @@ void print_field(int pos_1, int pos_2) {                // Печатает по
         } else {
             flag_1 = 0;
         }
-        printf("%*c", LENGHT / 2 - flag_1, '|');
+        if (pos_ball_y == count) {
+            printf("%*c", pos_ball_x - 2 - flag_1, 'o');
+            flag_ball == pos_ball_x - 2 - flag_1;
+        } else {
+            flag_ball == 0;
+        }
         if ((count >= pos_2) && (count < pos_2 + PLATFORM)) {
-            printf("%*c|", LENGHT / 2 - 2, '#');
+            printf("%*c|", LENGHT - 3 - flag_1 - flag_ball, '#');
             printf("\n");
         } else {
-            printf("%*c\n", LENGHT / 2 - 1, '|');
-            
+            printf("%*c\n", LENGHT - 2 - flag_1 - flag_ball, '|');
         }
-            
     }
     for (count = 1; count <= LENGHT; count++)
         printf("-");
@@ -90,11 +101,15 @@ int locate_rocket_2(int pos, char ch) {             // Определяет по
 
 int vector_x(int own) {                               // Определяет направление движения мяча по оси Х
     int flag;
-    flag = (owner == 1) ? 1 : -1;
+    flag = (own == 1) ? 1 : -1;
+    return flag;
 }
-
-
-int vector_y(int) {
-    int flag_top, flag_left, flag_down, flag_right;
+   
+int change_owner(int plat_1, int plat_2, int x, int y) {                   // Определяет того, к кому направляется мяч
+    int res;
+    if ((y == LENGHT - 3) && ((x >= plat_2) && x < (plat_2 + PLATFORM)))
+        return res = 1;
+    if ((y == 3) && ((x >= plat_1) && x < (plat_1 + PLATFORM)))
+        return res = 2;
 }
     
