@@ -31,13 +31,13 @@ int main(void) {
             while ((getchar() != '\n')) continue;
     }
     ball_x = start_x(owner), flag_x = vector_x(owner);
-    printf("Введите любую клавишу для старта игры"
-           "(только не кнопку выключения компьютера :))\n");
+    printf("Введите любую клавишу для старта игры (q для выхода)\n");
     while (sc_1 < FINISH && sc_2 < FINISH) {
         scanf("%c", &command);
         if (command == '\n') fflush(stdout);
         else
             while (getchar() != '\n') continue;
+        if (command == 'q') break;
         ball_y += flag_y, ball_x += flag_x;
         flag_angle = angle(rocket_1, rocket_2, ball_x, ball_y);
         if (flag_angle == 1) {               // Если мяч ударяет в угол
@@ -69,8 +69,9 @@ int main(void) {
         }
         print_field(rocket_1, rocket_2, ball_x, ball_y, sc_1, sc_2);
     }
-    if (sc_1 == FINISH) printf("Поздравляем первого игрока с победой!\n");
-    else
+    if (sc_1 == FINISH && command != 'q')
+        printf("Поздравляем первого игрока с победой!\n");
+    else if (sc_1 == FINISH && command != 'q')
         printf("Поздравляем второго игрока с победой!\n");
     return 0;
 }
@@ -174,7 +175,7 @@ int angle(int pos_1, int pos_2, int pos_ball_x, int pos_ball_y) {
         ((pos_ball_y == pos_2) || (pos_ball_y == pos_2 + PLATFORM - 1)))
         flag = 1;
     else if ((pos_ball_x == 2) &&
-             ((pos_ball_y == pos_1) || (pos_ball_y == pos_2 + PLATFORM - 1)))
+             ((pos_ball_y == pos_1) || (pos_ball_y == pos_1 + PLATFORM - 1)))
         flag = 1;
     return flag;
 }
